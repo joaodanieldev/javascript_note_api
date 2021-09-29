@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const secret = process.env.JWT_TOKEN;
 
+
+
 router.post('/register', async function(req, res) {
   const { name, email, password } = req.body;
   const user = new User({ name, email, password });
@@ -15,7 +17,7 @@ router.post('/register', async function(req, res) {
     await user.save()
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({error: "Error registering new user please try again."});
+    res.status(500).json({error: " Erro ao registrar novo usuário, tente novamente."});
   }
 });
 
@@ -26,11 +28,11 @@ router.post('/login', async(req, res) => {
   try {
     let user = await User.findOne({ email });
     if(!user)
-      res.status(401).json({error: 'erro 1'});
+      res.status(401).json({error: 'Senha ou email incorretos'});
     else {
       user.isCorrectPassword(password, function(err, same){
         if(!same)
-          res.status(401).json({error: 'errro 2'});
+          res.status(401).json({error: 'Senha ou email incorretos'});
         else {
           const token = jwt.sign({email}, secret, { expiresIn: '10d' });
           res.json({user: user, token: token});
@@ -38,7 +40,7 @@ router.post('/login', async(req, res) => {
       })
     }
   } catch (error) {
-    res.status(500).json({error: 'Internal error, please try again'});
+    res.status(500).json({error: 'Erro interno, por favor tente novamente'});
   }
 });
 	
