@@ -37,6 +37,25 @@ router.get('/', withAuth, async(req, res) =>{
   }
 })
 
+router.put('/:id', withAuth, async(req, res) => {
+  const { title, body } = req.body;
+  const { id } = req.params;
+  
+  try {
+    let note = await Note.findById(id);
+    if(isOwner(req.user, note)){
+      note = await Note.findByIdAndUpdate(id,
+        { $set: {title: title, body: body} },
+        { upsert: true, 'new': true }  
+      );
+      res.json(note)
+    } else
+      res.status(403).json({error: 'Permissão negado'});
+  } catch (error) {
+    res.status(500).json({error: 'Problema para atualizar a nota'});
+  }
+})
+
 const isOwner = (user, note) =>{
   if(JSON.stringify(user._id) == JSON.stringify(note.author._id))
     return true;
