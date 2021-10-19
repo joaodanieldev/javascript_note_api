@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const User = require('../models/user.js');
+const withAuth = require('../middlewares/auth');
 
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -43,20 +44,20 @@ router.post('/login', async(req, res) => {
   }
 });
 
-router.put('/', withAuth, async(req, res) =>{
+router.put('/', withAuth, async function(req, res) {
   const { name, email } = req.body;
 
   try {
     var user = await User.findOneAndUpdate(
-      {_id: req.user._id},
-      { $set: {name: name, email: email }},
-      { upsert: true, new: true}
+      {_id: req.user._id}, 
+      { $set: { name: name, email: email}}, 
+      { upsert: true, 'new': true }
     )
     res.json(user);
   } catch (error) {
-    res.status(401).json({error: error})
+    res.status(401).json({error: error});
   }
-})
+});
 
 router.put('/password', withAuth, async function(req, res) {
   const { password } = req.body;
