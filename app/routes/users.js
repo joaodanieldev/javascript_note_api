@@ -74,12 +74,11 @@ router.put('/password', withAuth, async function(req, res) {
   }
 });
 
-router.delete('/',  withAuth, async function(req, res) {
-   
+router.delete('/', withAuth, async function(req, res) {
   try {
-    let user = await User.findOne({_id: req.user._id});
-    await use.delete();
-    res.json({message: 'Ok'}).status(201);
+    let user = await User.findOne({_id: req.user._id });
+    await user.delete();
+    res.json({message: 'OK'}).status(201);
   } catch (error) {
     res.status(500).json({error: error});
   }
